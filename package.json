@@ -1,6 +1,5 @@
 {
   "name": "d3-basic-radarchart",
-  "homepage": "https://helloeujin.github.io/d3-basic-radarchart/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +7,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
