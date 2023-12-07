@@ -1,5 +1,5 @@
 {
-  "name": "d3-basic-tutorials",
+  "name": "d3-basic-radarchart",
   "homepage": "https://helloeujin.github.io/d3-basic-radarchart/",
   "private": true,
   "version": "0.0.0",
@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
+    "gh-pages": "^6.1.0",
     "vite": "^5.0.0"
   },
   "dependencies": {
