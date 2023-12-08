@@ -83,21 +83,21 @@ d3.csv("data/fifa23_maleplayers.csv")
     players = [...new Set(data.map((d) => d.short_name))];
     selectedPlayer = data.filter((d) => d.short_name === selectedName)[0];
 
-    // // Add dropdown
-    // const dropdown = document.getElementById("options");
+    // Add dropdown
+    const dropdown = document.getElementById("options");
 
-    // players.map((d) => {
-    //   const option = document.createElement("option");
-    //   option.value = d;
-    //   option.innerHTML = d;
-    //   option.selected = d === selectedName ? true : false;
-    //   dropdown.appendChild(option);
-    // });
+    players.map((d) => {
+      const option = document.createElement("option");
+      option.value = d;
+      option.innerHTML = d;
+      option.selected = d === selectedName ? true : false;
+      dropdown.appendChild(option);
+    });
 
-    // dropdown.addEventListener("change", function () {
-    //   selectedName = dropdown.value;
-    //   updatePlayer();
-    // });
+    dropdown.addEventListener("change", function () {
+      selectedName = dropdown.value;
+      updatePlayer();
+    });
 
     //  line
     radarLine.radius((d) => radiusScale(selectedPlayer[d]));
@@ -168,6 +168,66 @@ d3.csv("data/fifa23_maleplayers.csv")
   .catch((error) => {
     console.error("Error loading CSV data: ", error);
   });
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////  Update  //////////////////////////////
+const updatePlayer = () => {
+  selectedPlayer = data.filter((d) => d.short_name === selectedName)[0];
+
+  //  line
+  radarLine.radius((d) => radiusScale(selectedPlayer[d]));
+
+  // path
+  path.transition().duration(600).attr("d", radarLine);
+
+  // points
+  points
+    .transition()
+    .duration(600)
+    .attr("cx", (d, i) => getXPos(selectedPlayer[d], i))
+    .attr("cy", (d, i) => getYPos(selectedPlayer[d], i));
+
+  // player name
+  d3.select("#player-name").text(selectedPlayer.long_name);
+};
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////  Resize  //////////////////////////////
+window.addEventListener("resize", () => {
+  //  width, height updated
+  width = parseInt(d3.select("#svg-container").style("width"));
+  height = parseInt(d3.select("#svg-container").style("height"));
+
+  //  g updated
+  g.attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  //  scale updated
+  minLen = d3.min([height / 2 - margin.top, width / 2 - margin.right]);
+  radiusScale.range([0, minLen]);
+
+  //  axis updated
+  radiusAxis.attr("r", (d) => radiusScale(d));
+
+  angleAxis
+    .attr("x2", (d, i) => getXPos(100, i))
+    .attr("y2", (d, i) => getYPos(100, i));
+
+  //  line updated
+  radarLine.radius((d) => radiusScale(selectedPlayer[d]));
+
+  // path updated
+  path.attr("d", radarLine);
+
+  // points updated
+  points
+    .attr("cx", (d, i) => getXPos(selectedPlayer[d], i))
+    .attr("cy", (d, i) => getYPos(selectedPlayer[d], i));
+
+  // labels updated
+  labels
+    .attr("x", (d, i) => getXPos(116, i))
+    .attr("y", (d, i) => getYPos(116, i) + 5);
+});
 
 ////////////////// functions
 const getXPos = (dist, index) => {
