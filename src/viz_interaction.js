@@ -54,31 +54,10 @@ let path, points, labels;
 ////////////////////////////  Load CSV  ////////////////////////////
 let data = [];
 
-d3.csv("data/fifa23_maleplayers.csv")
+d3.json("data/fifa23_maleplayers.json")
   .then((raw_data) => {
-    // data parsing
-    data = raw_data
-      .map((d) => {
-        const obj = {
-          pace: parseInt(d.pace),
-          shooting: parseInt(d.shooting),
-          passing: parseInt(d.passing),
-          dribbling: parseInt(d.dribbling),
-          defending: parseInt(d.defending),
-          physic: parseInt(d.physic),
-          overall: parseInt(d.overall),
-          long_name: d.long_name,
-          short_name: d.short_name,
-        };
-
-        // check for null values
-        const hasNull = Object.values(obj).some(
-          (value) => value === null || Number.isNaN(value)
-        );
-        obj.hasNull = hasNull;
-        return obj;
-      })
-      .filter((d) => d.overall > 85 && !d.hasNull);
+    data = raw_data.filter((d) => d.overall > 85);
+    console.log(data);
 
     players = [...new Set(data.map((d) => d.short_name))];
     selectedPlayer = data.filter((d) => d.short_name === selectedName)[0];
